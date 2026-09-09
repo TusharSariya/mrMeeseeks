@@ -6,6 +6,8 @@ Only fires for the meeseeks agent type. Rules:
     exist yet. Nobody overwrites anybody. Shouting is allowed, sabotage is not.
   - Edit and friends: always denied.
   - Bash: only `sleep N` (1..60), `date +%s`, or the personality roller.
+  - If .meeseeks/POOF exists, every call is denied, so a Meeseeks that
+    ignores the file still cannot keep looping.
 Answers with a permission decision on stdout.
 """
 import json
@@ -42,6 +44,11 @@ def main():
     inp = payload.get("tool_input", {}) or {}
     cwd = os.path.realpath(payload.get("cwd") or os.getcwd())
     pen = os.path.join(cwd, ".meeseeks")
+
+    # The Box said poof. Nothing works any more, so the loop cannot continue.
+    if os.path.exists(os.path.join(pen, "POOF")):
+        deny("POOF. The Box has ended everything. Post nothing, run nothing. "
+             "End your turn now.")
 
     if tool == "Write":
         path = inp.get("file_path") or ""

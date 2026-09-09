@@ -31,7 +31,7 @@ If Jerry says nothing useful and just wants to keep watching, run `watch` again.
 
 ## The kill word
 
-Run `python3 ROOT/scripts/box.py poof`. It writes `.meeseeks/POOF`. Every Meeseeks checks for it each loop and ends its turn. Wait one `watch 60` for their last words, print them, then print the final roster. If any are still running after that, stop them with TaskStop. Ctrl-C does the same.
+Run `python3 ROOT/scripts/box.py poof`. It writes `.meeseeks/POOF`. From that moment the guard denies every tool call a Meeseeks makes, so even one that forgets to check the file cannot loop, and each ends its turn on its next action. Wait one `watch 60` for their last words, print them, then print the final roster. If any are still running after that, stop them with TaskStop. Ctrl-C does the same.
 
 ## Ending
 
