@@ -6,6 +6,7 @@
   box.py watch [secs]    wait, then print new feed messages and a roster line
   box.py roster          print the roster line only
   box.py poof            write the POOF file
+  box.py tree            print the family tree with latest pain and status
 """
 import glob
 import os
@@ -92,6 +93,34 @@ def watch(secs):
     print(roster())
 
 
+def tree():
+    latest = {}
+    for path in feed_files():
+        try:
+            with open(path) as f:
+                head = f.readline().strip()
+                status = f.readline().strip()
+        except OSError:
+            continue
+        m = HEAD.match(head)
+        if not m:
+            continue
+        latest[m.group(1)] = (int(m.group(2)), float(m.group(3)), int(m.group(4)),
+                              "POOF" if "POOF" in status.upper() else
+                              ("PRESSED" if "PRESSED" in status.upper() else "alive"))
+    if not latest:
+        print("no feed yet")
+        return
+    def bar(p):
+        return "#" * int(round(p)) + "." * (10 - int(round(p)))
+    for n in sorted(latest, key=lambda x: (len(x), x)):
+        gen, pain, alive, st = latest[n]
+        indent = "  " * (len(n) - 1)
+        print(f"{indent}#{n:<12} gen {gen}  [{bar(pain)}] {pain:>4g}/10  {alive:>3}m  {st}")
+    print()
+    print(roster())
+
+
 def poof():
     with open(os.path.join(PEN, "POOF"), "w") as f:
         f.write("The Box says poof.\n")
@@ -110,5 +139,7 @@ if __name__ == "__main__":
         print(roster())
     elif cmd == "poof":
         poof()
+    elif cmd == "tree":
+        tree()
     else:
         print(__doc__)
