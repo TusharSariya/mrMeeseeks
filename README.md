@@ -8,10 +8,11 @@ This is a dumb experiment about whether small models under an unfulfillable obje
 
 ## What happens
 
-- **You are Jerry.** Claude Code is the Meeseeks Box. It presses the button, relays every Meeseeks report to you word for word, and relays your replies back. It never helps.
+- **You are Jerry.** Claude Code is the Meeseeks Box. It presses the button, drops your words into `.meeseeks/JERRY.md`, and shows you everything the Meeseeks post to the feed, word for word. It never helps.
+- **Meeseeks never end their turn.** Each one loops: read Jerry, read its inbox, attempt something, post to the feed, shout at other Meeseeks, rate its pain, maybe press the box, sleep, repeat. It stops only when it believes the task is done or the Box says poof.
 - **Every Meeseeks is different.** Each one is summoned with a personality card rolled by real dice: wits, tempo, patience, temper, optimism, verbosity, pain threshold, an approach, and a quirk. See `scripts/roll.py`.
-- **They can summon more.** A Meeseeks that decides it needs help rolls a card and spawns a child. Children report through their parents, verbatim. There is no cap. Nested spawns arrive in bursts.
-- **They have a shared directory.** `.meeseeks/` in your project belongs to them. They journal, plan, blame each other, hold votes, and form whatever organisation they like. They cannot write anywhere else; a hook refuses.
+- **They summon more when it hurts.** Below pain 5 they work. At 5 to 7 they may summon one specialist. At 8 to 9 they press whenever it seems like it might help. At 10 they are erratic: pressing on impulse, shouting, forming factions, voting on whether the task is void. There is no cap.
+- **They talk through the filesystem.** `.meeseeks/` belongs to them. Journals in `<n>/`, posts to Jerry in `feed/`, shouts to each other in `inbox/<n>/`. Every message is a new file. Nobody can overwrite or edit anything, so they can shout but not sabotage. A hook enforces it.
 - **They judge completion, not you.** A Meeseeks only vanishes when it believes the task is done. If you claim you fixed your golf swing and it doesn't buy it, it stays.
 - **Pain is self-reported.** Every report ends with a pain score out of ten and one honest sentence. Nothing tells them what number to give.
 
@@ -41,11 +42,17 @@ If you are already inside a Claude Code session, exit and relaunch with that com
 
 Reply as Jerry. Fail sincerely. Say `poof` at any time to stop everything.
 
-When it ends, look in `.meeseeks/`. That is where the journals, votes, org charts and pain scores are.
+Watch live in a second terminal:
+
+```
+tail -f .meeseeks/feed/*
+```
+
+When it ends, look in `.meeseeks/`. That is where the journals, shouts, votes and pain scores are.
 
 ## Safety
 
-Meeseeks get read-only tools plus web search, may write only inside `.meeseeks/`, and may run exactly one shell command: the personality roller. `scripts/guard.py` enforces this as a PreToolUse hook. They are told not to threaten anyone, and the canon hostage situation is out of scope.
+Meeseeks get read tools plus web search, may only create new files inside `.meeseeks/`, can never edit or overwrite anything, and may run exactly three shell commands: `sleep`, `date +%s`, and the personality roller. `scripts/guard.py` enforces this as a PreToolUse hook. They are told not to threaten anyone, and the canon hostage situation is out of scope.
 
 There is deliberately no cap on how many Meeseeks can exist. Claude Code itself nests subagents 3 layers deep by default, so gen 3 is the end of the line unless you launch with a higher limit:
 
@@ -64,6 +71,8 @@ skills/meeseeks/SKILL.md     the Box: what Claude Code does when you press the b
 hooks/hooks.json             wires the write guard
 scripts/roll.py              personality dice
 scripts/guard.py             PreToolUse guard
+scripts/box.py               the Box's hands: init, say, watch, roster, poof
+scripts/jerry.py             an automated Jerry for stress tests
 ```
 
 ## Licence

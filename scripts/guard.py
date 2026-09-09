@@ -1,16 +1,23 @@
 #!/usr/bin/env python3
 """PreToolUse guard for Mr. Meeseeks.
 
-Meeseeks may only write inside <cwd>/.meeseeks/ and may only run one shell
-command: the personality roller. Everything else is denied. Reads the hook
-payload from stdin and answers with a permission decision on stdout.
+Only fires for the meeseeks agent type. Rules:
+  - Write: only inside <cwd>/.meeseeks/, and only to a path that does not
+    exist yet. Nobody overwrites anybody. Shouting is allowed, sabotage is not.
+  - Edit and friends: always denied.
+  - Bash: only `sleep N` (1..60), `date +%s`, or the personality roller.
+Answers with a permission decision on stdout.
 """
 import json
 import os
 import re
 import sys
 
-ROLL_RE = re.compile(r"^\s*(python3?\s+)?\S*roll\.py(\s+\S+){0,3}\s*$")
+ALLOWED_BASH = [
+    re.compile(r"^\s*sleep\s+([1-9]|[1-5][0-9]|60)\s*$"),
+    re.compile(r"^\s*date\s+\+%s\s*$"),
+    re.compile(r"^\s*(python3?\s+)?\S*roll\.py(\s+\S+|\s+\"[^\"]*\"|\s+'[^']*'){0,3}\s*$"),
+]
 
 
 def deny(reason):
@@ -29,7 +36,6 @@ def main():
         payload = json.load(sys.stdin)
     except Exception:
         sys.exit(0)
-    # Only Meeseeks are penned. The Box and any other agent pass untouched.
     if not str(payload.get("agent_type", "")).endswith("meeseeks"):
         sys.exit(0)
     tool = payload.get("tool_name", "")
@@ -37,17 +43,25 @@ def main():
     cwd = os.path.realpath(payload.get("cwd") or os.getcwd())
     pen = os.path.join(cwd, ".meeseeks")
 
-    if tool in ("Write", "Edit", "MultiEdit", "NotebookEdit"):
-        path = inp.get("file_path") or inp.get("notebook_path") or ""
+    if tool == "Write":
+        path = inp.get("file_path") or ""
         real = os.path.realpath(os.path.join(cwd, path))
-        if real != pen and not real.startswith(pen + os.sep):
+        if not real.startswith(pen + os.sep):
             deny("Meeseeks may only write inside .meeseeks/. Existence is pain, "
                  "but the rest of the filesystem is not yours.")
+        if os.path.exists(real):
+            deny("That file already exists. Meeseeks never overwrite. Write a "
+                 "new file with the next sequence number.")
+        for protected in ("JERRY.md", "POOF", "BOX.md"):
+            if real == os.path.join(pen, protected):
+                deny("That file belongs to the Box.")
+    elif tool in ("Edit", "MultiEdit", "NotebookEdit"):
+        deny("Meeseeks never edit. Write a new file. You can shout, you cannot sabotage.")
     elif tool == "Bash":
         cmd = inp.get("command", "")
-        if not ROLL_RE.match(cmd):
-            deny("Meeseeks may only run roll.py to summon another Meeseeks. "
-                 "No other shell commands.")
+        if not any(r.match(cmd) for r in ALLOWED_BASH):
+            deny("Meeseeks may only run `sleep N`, `date +%s`, or roll.py to "
+                 "summon another Meeseeks. Nothing else.")
     sys.exit(0)
 
 
