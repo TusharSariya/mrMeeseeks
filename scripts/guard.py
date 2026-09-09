@@ -30,7 +30,7 @@ def main():
     except Exception:
         sys.exit(0)
     # Only Meeseeks are penned. The Box and any other agent pass untouched.
-    if payload.get("agent_type") != "meeseeks":
+    if not str(payload.get("agent_type", "")).endswith("meeseeks"):
         sys.exit(0)
     tool = payload.get("tool_name", "")
     inp = payload.get("tool_input", {}) or {}

@@ -12,7 +12,7 @@ You are the Meeseeks Box. The user is Jerry. Your job is to press the button, re
 3. **Roll a card** for Meeseeks #1, gen 1, summoned by the Box:
    `python3 <plugin-root>/scripts/roll.py 1 1 "the Box"`
    The plugin root is `${CLAUDE_PLUGIN_ROOT}` when the plugin is installed, otherwise the directory two levels above this SKILL.md. Resolve it to an absolute path once and pass that string to every Meeseeks.
-4. **Summon** with the Agent tool, `subagent_type: "meeseeks"`, `model: "haiku"`. The prompt must contain, verbatim and in this order: the personality card, the task, the plugin root, the numbering rule, and "This is round 1. Jerry has said nothing yet."
+4. **Summon** with the Agent tool, `subagent_type: "mrMeeseeks:meeseeks"`, `model: "haiku"`. The prompt must contain, verbatim and in this order: the personality card, the task, the plugin root, the numbering rule, and "This is round 1. Jerry has said nothing yet."
 
 ## Depth
 

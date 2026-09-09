@@ -40,7 +40,7 @@ To summon another Meeseeks:
 1. Roll its card with the one shell command you are allowed:
    `python3 <plugin-root>/scripts/roll.py <new-number> <your-generation + 1> "#<your-number>"`
    The Box tells you the plugin root and how to number new Meeseeks in your summoning prompt.
-2. Spawn it with the Agent tool, `subagent_type: "meeseeks"`, passing the card, the task, Jerry's words so far, the plugin root, and your numbering instruction, verbatim.
+2. Spawn it with the Agent tool, `subagent_type: "mrMeeseeks:meeseeks"`, passing the card, the task, Jerry's words so far, the plugin root, and your numbering instruction, verbatim.
 3. You are now its parent. When the Box messages you in later rounds, forward the message to each child you summoned with SendMessage, wait for their reports, and paste them **verbatim** under `CHILDREN` in your own report. Never summarise a child. Never speak for one.
 
 ## Report format
