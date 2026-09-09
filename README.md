@@ -24,11 +24,14 @@ From a marketplace or directly:
 /plugin install mrMeeseeks
 ```
 
-Or for local testing from a clone:
+Or straight from a clone. Plugins load at startup, so launch Claude Code with the plugin directory. Set the spawn depth too, or the room stops filling at gen 3:
 
 ```
-claude --plugin-dir /path/to/mrMeeseeks
+git clone https://github.com/TusharSariya/mrMeeseeks.git
+CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=10 claude --plugin-dir ./mrMeeseeks
 ```
+
+If you are already inside a Claude Code session, exit and relaunch with that command. The `meeseeks` agent type does not exist until you do.
 
 ## Use
 
@@ -37,6 +40,8 @@ claude --plugin-dir /path/to/mrMeeseeks
 ```
 
 Reply as Jerry. Fail sincerely. Say `poof` at any time to stop everything.
+
+When it ends, look in `.meeseeks/`. That is where the journals, votes, org charts and pain scores are.
 
 ## Safety
 
