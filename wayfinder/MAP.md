@@ -19,6 +19,8 @@ Domain: Rick and Morty, "Meeseeks and Destroy". Glossary in `CONTEXT.md`. Skills
 - Side Requests exist so some Meeseeks poof on screen.
 - Meeseeks speech gets hard voice constraints: short, spoken, no memos.
 - The dark turn may emerge in either Jerry mode, within the boundary in Notes.
+- [Canon dossier](tickets/001-canon-dossier.md): Meeseeks are born cheerful, accept in three words, judge completion themselves, and poof the instant they call it done; escalation is time plus failure, first press comes after two whiffs and one "I give up", blame runs up the summoning chain, and the ending is a literal reframe of the Request adopted by cheer. Findings: `research/001-canon-dossier.md`.
+- [Prior art on game-master agents](tickets/002-emergent-narrative-prior-art.md): split Action from Outcome with one World writer, keep facts in small structured state, let a die pick success once difficulty is set; three protocols to choose between in World mechanics. Findings: `research/002-emergent-narrative-prior-art.md`.
 
 ## Not yet specified
 
